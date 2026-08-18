@@ -9,7 +9,7 @@ services:
       - PORT=5151
       - CHECK_INTERVAL=900
       - CONCURRENCY_LIMIT=10
-      - MAX_PING_MS=1000
+      - MAX_PING_MS=1500
       - TIMEOUT_PING=5
       - EXTRA_VLESS_URL=${EXTRA_VLESS_URL}
     volumes:
