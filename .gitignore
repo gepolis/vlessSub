@@ -6,3 +6,5 @@ xray/
 working_vless.txt
 .DS_Store
 Thumbs.db
+certbot/conf/
+certbot/www/

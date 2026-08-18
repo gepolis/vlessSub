@@ -3,14 +3,45 @@ services:
     build: .
     container_name: vless-list
     restart: unless-stopped
-    ports:
-      - "5151:5151"
+    expose:
+      - "5151"
     environment:
       - PORT=5151
       - CHECK_INTERVAL=900
       - CONCURRENCY_LIMIT=10
       - MAX_PING_MS=1000
       - TIMEOUT_PING=5
-      - EXTRA_VLESS_URL=vless://<UUID>@<HOST>:<PORT>?encryption=none&security=reality&sni=<SNI>&fp=chrome&pbk=<PUBLIC_KEY>&sid=<SHORT_ID>&type=tcp#Для+коти+%F0%9F%91%87%F0%9F%91%87%F0%9F%91%87
+      - EXTRA_VLESS_URL=${EXTRA_VLESS_URL}
     volumes:
       - ./working_vless.txt:/app/working_vless.txt
+    networks:
+      - internal
+
+  nginx:
+    image: nginx:alpine
+    container_name: vless-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - vless-list
+    networks:
+      - internal
+
+  certbot:
+    image: certbot/certbot
+    container_name: vless-certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - internal
+
+networks:
+  internal:
