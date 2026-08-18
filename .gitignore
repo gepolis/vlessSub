@@ -1,0 +1,8 @@
+.venv/
+.idea/
+__pycache__/
+*.pyc
+xray/
+working_vless.txt
+.DS_Store
+Thumbs.db
