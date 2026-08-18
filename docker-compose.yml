@@ -3,8 +3,8 @@ services:
     build: .
     container_name: vless-list
     restart: unless-stopped
-    expose:
-      - "5151"
+    ports:
+      - "5151:5151"
     environment:
       - PORT=5151
       - CHECK_INTERVAL=900
@@ -14,35 +14,3 @@ services:
       - EXTRA_VLESS_URL=${EXTRA_VLESS_URL}
     volumes:
       - ./vless-data:/app/vless-data
-    networks:
-      - internal
-
-  nginx:
-    image: nginx:alpine
-    container_name: vless-nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    depends_on:
-      - vless-list
-    networks:
-      - internal
-
-  certbot:
-    image: certbot/certbot
-    container_name: vless-certbot
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'while true; do certbot renew; sleep 12h; done'"
-    networks:
-      - internal
-
-networks:
-  internal:
