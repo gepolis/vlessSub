@@ -1,19 +1,27 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 echo "=== Initial certificate issuance ==="
 
-# Stop nginx temporarily so certbot can use standalone mode on port 80
-docker compose stop nginx
+# Start nginx with HTTP-only config for ACME challenge
+docker compose up -d nginx
 
+echo "### Waiting for nginx to be ready..."
+sleep 2
+
+# Get certificate using webroot mode (nginx already serves ACME challenges)
 docker compose run --rm certbot certonly \
-    --standalone \
+    --webroot \
+    -w /var/www/certbot \
     -d sb.transhata.me \
     --email admin@transhata.me \
     --agree-tos \
     --no-eff-email
 
-# Start nginx with SSL
-docker compose up -d nginx
+# Switch nginx config to SSL
+cp nginx/ssl.conf nginx/default.conf
 
-echo "=== Certificate obtained. Nginx started on 443 ==="
+# Reload nginx to pick up SSL config
+docker compose exec nginx nginx -s reload
+
+echo "=== Certificate obtained. Service is available at https://sb.transhata.me ==="

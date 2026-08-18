@@ -8,3 +8,4 @@ vless-data/
 Thumbs.db
 certbot/conf/
 certbot/www/
+.env
