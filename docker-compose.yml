@@ -13,7 +13,7 @@ services:
       - TIMEOUT_PING=5
       - EXTRA_VLESS_URL=${EXTRA_VLESS_URL}
     volumes:
-      - ./working_vless.txt:/app/working_vless.txt
+      - ./vless-data:/app/vless-data
     networks:
       - internal
 

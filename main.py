@@ -33,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 XRAY_DIR = BASE_DIR / "xray"
 
-OUTPUT_FILE = BASE_DIR / "working_vless.txt"
+OUTPUT_FILE = BASE_DIR / "vless-data" / "working_vless.txt"
 
 START_PORT = 10800
 
@@ -1165,10 +1165,18 @@ def save_results(
         )
     )
 
+    OUTPUT_FILE.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
     if temp_file.is_dir():
-        shutil.rmtree(
-            temp_file
-        )
+        try:
+            shutil.rmtree(
+                temp_file
+            )
+        except OSError:
+            pass
 
     temp_file.write_text(
         content,
@@ -1176,9 +1184,12 @@ def save_results(
     )
 
     if OUTPUT_FILE.is_dir():
-        shutil.rmtree(
-            OUTPUT_FILE
-        )
+        try:
+            shutil.rmtree(
+                OUTPUT_FILE
+            )
+        except OSError:
+            pass
 
     os.replace(
         temp_file,

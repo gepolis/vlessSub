@@ -3,7 +3,7 @@
 __pycache__/
 *.pyc
 xray/
-working_vless.txt
+vless-data/
 .DS_Store
 Thumbs.db
 certbot/conf/
