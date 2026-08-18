@@ -1165,10 +1165,20 @@ def save_results(
         )
     )
 
+    if temp_file.is_dir():
+        shutil.rmtree(
+            temp_file
+        )
+
     temp_file.write_text(
         content,
         encoding="utf-8"
     )
+
+    if OUTPUT_FILE.is_dir():
+        shutil.rmtree(
+            OUTPUT_FILE
+        )
 
     os.replace(
         temp_file,
