@@ -1,7 +1,6 @@
 services:
   vless-list:
     build: .
-    container_name: vless-list
     restart: unless-stopped
     ports:
       - "5151:5151"
